@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Questions\Actions\Questions;
+namespace App\Modules\Questions\Actions\Question;
 
 use App\Modules\Common\Actions\ActionInterface;
 use App\Modules\Common\Exceptions\AppException;
@@ -27,8 +27,8 @@ class CreateQuestionAction implements ActionInterface
     {
         try {
             DB::beginTransaction();
-            $order = Question::max('primary_order') + 1;
-            $question = Question::create([...(array)$this->dto, 'primary_order' => $order]);
+            $order = Question::max('order') + 1;
+            $question = Question::create([...(array)$this->dto, 'order' => $order]);
             foreach ($this->dto->answers as $answer) {
                 Answer::create([...$answer, 'question_id' => $question->id]);
             }

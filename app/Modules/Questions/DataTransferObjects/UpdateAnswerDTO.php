@@ -4,25 +4,29 @@ namespace App\Modules\Questions\DataTransferObjects;
 
 use App\Modules\Common\Exceptions\ValidationException;
 use App\Modules\Common\Traits\ToArray;
+use App\Modules\Questions\Entities\Question;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class CreateQuestionDTO
+class UpdateAnswerDTO
 {
     use ToArray;
 
-    public readonly string $query;
+    public readonly string $statement;
 
-    public readonly array $answers;
+    public readonly int $question_id;
+
+    public readonly ?int $next_question_id;
 
     /**
      * @throws ValidationException
      */
-    public function __construct(Request $request)
+    public function __construct(Request $request, Question $question)
     {
+        $this->question_id = $question->id;
         $payload = $this->getValidated($request);
-        $this->query = $payload['query'];
-        $this->answers = $payload['answers'];
+        $this->statement = $payload['statement'];
+        $this->next_question_id = $payload['next_question_id'];
     }
 
     /**
@@ -34,11 +38,10 @@ class CreateQuestionDTO
             throw new ValidationException(['Param "payload" was not found in request body.']);
         }
         $payload = $request['payload'];
-        $validator = Validator::make($payload, [
-            'query' => 'required|max:255',
-            'answers.*.statement' => 'required|min:1|max:255',
-            'answers.*.order' => 'required|integer',
-            'answers.*.next_question_id' => ['nullable', 'integer',' exists:questions,id']
+        $validator = Validator::make([...$payload, 'question_id' => $this->question_id], [
+            'statement' => ['required', 'min:1', 'max:255'],
+            'question_id' => ['required', 'integer',' exists:questions,id'],
+            'next_question_id' => ['nullable', 'integer',' exists:questions,id'],
         ]);
         if ($validator->fails()) {
             throw new ValidationException($validator->errors()->toArray());

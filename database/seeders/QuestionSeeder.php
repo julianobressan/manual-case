@@ -16,26 +16,42 @@ class QuestionSeeder extends Seeder
             [
                 'id' => 1,
                 'query' => 'Do you have difficulty getting or maintaining an erection?',
-                'numbering' => '1',
-                'primary_order' => 1
+                'order' => 1
             ],
             [
                 'id' => 2,
                 'query' => 'Have you tried any of the following treatments before?',
-                'numbering' => '2',
-                'primary_order' => 1
+                'order' => 2
             ],
             [
                 'id' => 3,
                 'query' => 'Was the Viagra or Sildenafil product you tried before effective?',
-                'numbering' => '2A',
-                'primary_order' => null
+                'order' => 3
             ],
             [
                 'id' => 4,
                 'query' => 'Was the Cialis or Tadalafil product you tried before effective?',
-                'numbering' => '2B',
-                'primary_order' => null
+                'order' => 4
+            ],
+            [
+                'id' => 5,
+                'query' => 'Which is your preferred treatment?',
+                'order' => 5
+            ],
+            [
+                'id' => 6,
+                'query' => 'Do you have, or have you ever had, any heart or neurological conditions?',
+                'order' => 6
+            ],
+            [
+                'id' => 7,
+                'query' => 'Do any of the listed medical conditions apply to you?',
+                'order' => 7
+            ],
+            [
+                'id' => 8,
+                'query' => 'Are you taking any of the following drugs?',
+                'order' => 8
             ],
         ];
         DB::table('questions')->insert($questions);

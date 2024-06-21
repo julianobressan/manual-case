@@ -8,6 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * @property Question $question
+ * @property Question $nextQuestion
+ * @property int $id
+ * @property string $statement
+ * @property int $order
+ * @property Product[] $products
+ */
 class Answer extends Model
 {
     use HasFactory;
@@ -41,8 +49,17 @@ class Answer extends Model
      * Returns the recommended products for this answer.
      * @return BelongsToMany
      */
-    public function products(): BelongsToMany
+    public function productsToInclude(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(Product::class)->withPivot('exclude')->having('pivot_exclude', '=', false);
+    }
+
+    /**
+     * Return the products excluded for this answer.
+     * @return BelongsToMany
+     */
+    public function productsToExclude(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class)->withPivot('exclude')->having('pivot_exclude', '=', true);
     }
 }

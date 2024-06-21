@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('answer_product', function (Blueprint $table) {
+        Schema::create('answer_user', function (Blueprint $table) {
             $table->id();
-            $table->boolean('exclude');
+            $table->foreignId('user_id')->constrained();
             $table->foreignId('answer_id')->constrained();
-            $table->foreignId('product_id')->constrained();
+            $table->timestamps();
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('answer_product');
+        Schema::dropIfExists('answer_user');
     }
 };

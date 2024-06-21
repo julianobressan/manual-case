@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Questions\Actions\Questions;
+namespace App\Modules\Questions\Actions\Question;
 
 use App\Modules\Common\Actions\ActionInterface;
 use App\Modules\Questions\Entities\Answer;

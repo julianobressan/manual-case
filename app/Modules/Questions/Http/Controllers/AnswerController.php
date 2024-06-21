@@ -4,12 +4,19 @@ namespace App\Modules\Questions\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Common\Exceptions\AppException;
+use App\Modules\Common\Exceptions\ValidationException;
 use App\Modules\Common\Traits\HttpResponse;
-use App\Modules\Questions\Actions\Answers\CreateAnswerAction;
-use App\Modules\Questions\Actions\Answers\DeleteAnswerAction;
-use App\Modules\Questions\Actions\Questions\AnswerQuestionAction;
+use App\Modules\Questions\Actions\Answer\CreateAnswerAction;
+use App\Modules\Questions\Actions\Answer\CreateAnswerProductExcludeAction;
+use App\Modules\Questions\Actions\Answer\CreateAnswerProductIncludeAction;
+use App\Modules\Questions\Actions\Answer\DeleteAnswerAction;
+use App\Modules\Questions\Actions\Answer\UpdateAnswerAction;
+use App\Modules\Questions\Actions\Question\AnswerQuestionAction;
 use App\Modules\Questions\DataTransferObjects\CreateAnswerDTO;
+use App\Modules\Questions\DataTransferObjects\CreateAnswerProductExcludeDTO;
+use App\Modules\Questions\DataTransferObjects\CreateAnswerProductIncludeDTO;
 use App\Modules\Questions\DataTransferObjects\DeleteAnswerDTO;
+use App\Modules\Questions\DataTransferObjects\UpdateAnswerDTO;
 use App\Modules\Questions\Entities\Answer;
 use App\Modules\Questions\Entities\Question;
 use App\Modules\Questions\Http\Resources\AnswerResource;
@@ -33,7 +40,27 @@ class AnswerController extends Controller
             $dto = new CreateAnswerDTO($request, $question);
             $action = new CreateAnswerAction($dto);
             $answer = $action->execute();
-            return $this->success('Answer created.', data: new AnswerResource($answer));
+            return $this->success('Answer created.', 201, new AnswerResource($answer));
+        } catch (AppException $e) {
+            return $this->error($e);
+        }
+    }
+
+    /**
+     * Route: PATCH /questions/{question}/answer/{answer}
+     * Updates an answer.
+     * @param Request $request
+     * @param Question $question
+     * @param Answer $answer
+     * @return JsonResponse
+     */
+    public function update(Request $request, Question $question, Answer $answer): JsonResponse
+    {
+        try {
+            $dto = new UpdateAnswerDTO($request, $question);
+            $action = new UpdateAnswerAction($dto, $answer);
+            $action->execute();
+            return $this->success('Answer updated.', 204);
         } catch (AppException $e) {
             return $this->error($e);
         }
@@ -60,21 +87,55 @@ class AnswerController extends Controller
     }
 
     /**
-     * Route: GET /questions/{question}/answer/{answer}
-     * Gets the response of a chosen answer.
+     * Route: POST /questions/{question}/answer/{answer}
+     * Register the user answer.
      * @param Request $request
      * @param Question $question
      * @param Answer $answer
      * @return JsonResponse
      */
-    public function get(Request $request, Question $question, Answer $answer): JsonResponse
+    public function register(Request $request, Question $question, Answer $answer): JsonResponse
     {
         try {
             $action = new AnswerQuestionAction($question, $answer);
-            $action->execute();
-            return $this->success('Answer result.', data: new AnswerResource($answer));
+            $data = $action->execute();
+            return $this->success('Answer result.', data: $data);
         } catch (AppException $e) {
             return $this->error($e);
         }
+    }
+
+    /**
+     * Route: POST /questions/{question}/answer/{answer}/include
+     * Adds a product to be recommended.
+     * @param Request $request
+     * @param Question $question
+     * @param Answer $answer
+     * @return JsonResponse
+     * @throws ValidationException
+     */
+    public function addProductToInclude(Request $request, Question $question, Answer $answer): JsonResponse
+    {
+        $dto = new CreateAnswerProductIncludeDTO($request, $answer);
+        $action = new CreateAnswerProductIncludeAction($dto);
+        $data = $action->execute();
+        return $this->success('Recommended product added.', data: new AnswerResource($data));
+    }
+
+    /**
+     * Route: POST /questions/{question}/answer/{answer}/exclude
+     * Adds a product to be recommended.
+     * @param Request $request
+     * @param Question $question
+     * @param Answer $answer
+     * @return JsonResponse
+     * @throws ValidationException
+     */
+    public function addProductToExclude(Request $request, Question $question, Answer $answer): JsonResponse
+    {
+        $dto = new CreateAnswerProductExcludeDTO($request, $answer);
+        $action = new CreateAnswerProductExcludeAction($dto);
+        $data = $action->execute();
+        return $this->success('Recommended product added.', data: new AnswerResource($data));
     }
 }

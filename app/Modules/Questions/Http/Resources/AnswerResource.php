@@ -2,9 +2,19 @@
 
 namespace App\Modules\Questions\Http\Resources;
 
+use App\Modules\Products\Entities\Product;
+use App\Modules\Questions\Entities\Question;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @property Question $question
+ * @property Question $nextQuestion
+ * @property int $id
+ * @property string $statement
+ * @property int $order
+ * @property Product[] $products
+ */
 class AnswerResource extends JsonResource
 {
     /**
@@ -14,15 +24,7 @@ class AnswerResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $products = [];
-        foreach ($this->products as $product) {
-            $products[] = [
-                'product_id' => $product->id,
-                'name' => $product->name,
-                'reference' => $product->reference,
-            ];
-        }
-        $nextQuestion = null;
+        $nextQuestionJson = [];
         if ($this->nextQuestion) {
             $answers = [];
             foreach ($this->nextQuestion->answers as $answer) {
@@ -30,11 +32,12 @@ class AnswerResource extends JsonResource
                     'answer_id' => $answer->id,
                     'statement' => $answer->statement,
                     'order' => $answer->order,
+                    'products_to_include' => $answer->productsToInclude,
+                    'products_to_exclude' => $answer->productsToExclude
                 ];
             }
-            $nextQuestion = [
+            $nextQuestionJson = [
                 'question_id' => $this->nextQuestion->id,
-                'numbering' => $this->nextQuestion->numbering,
                 'order' => $this->nextQuestion->primary_order,
                 'query' => $this->nextQuestion->query,
                 'answers' => $answers
@@ -43,8 +46,10 @@ class AnswerResource extends JsonResource
         }
         return [
             'answer_id' => $this->id,
-            'next_question' => $nextQuestion,
-            'recommended_products' => $products
+            'statement' => $this->statement,
+            'next_question' => $nextQuestionJson,
+            'products_to_include' => $this->productsToInclude,
+            'products_to_exclude' => $this->productsToExclude
         ];
     }
 }

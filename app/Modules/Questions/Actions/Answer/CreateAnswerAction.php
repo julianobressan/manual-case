@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Questions\Actions\Answers;
+namespace App\Modules\Questions\Actions\Answer;
 
 use App\Modules\Common\Actions\ActionInterface;
 use App\Modules\Questions\DataTransferObjects\CreateAnswerDTO;

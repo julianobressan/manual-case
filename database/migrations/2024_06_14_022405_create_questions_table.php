@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
             $table->string('query');
-            $table->string('numbering')->unique();
-            $table->integer('primary_order')->nullable();
+            $table->integer('order');
             $table->timestamps();
         });
     }

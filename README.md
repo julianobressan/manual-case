@@ -10,7 +10,6 @@
     "data": [
         {
             "id": "1",
-            "primary_order": 1,
             "query": "Do you have difficulty getting or maintaining an erection?",
             "answers": [
                 {
@@ -27,7 +26,6 @@
         },
         {
             "id": "2",
-            "primary_order": 2,
             "query": "Have you tried any of the following treatments before?",
             "answers": [
                 {
@@ -44,7 +42,6 @@
         },
         {
             "id": "2A",
-            "primary_order": null,
             "query": "Was the Viagra or Sildenafil product you tried before effective?",
             "answers": [
                 {
@@ -71,7 +68,6 @@
     "data": 
     {
         "id": "1",
-        "primary_order": 1,
         "query": "Do you have difficulty getting or maintaining an erection?",
         "answers": [
             {
@@ -117,7 +113,6 @@
 ```json
 {
     "payload": {
-        "primary_order": 1,
         "question": "Do you have difficulty getting or maintaining an erection?",
         "answers": [
             {

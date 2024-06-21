@@ -39,7 +39,7 @@ class CreateAnswerDTO
         }
         $payload = $request['payload'];
         $validator = Validator::make([...$payload, 'question_id' => $this->question_id], [
-            'statement' => ['required', 'min:5', 'max:255'],
+            'statement' => ['required', 'min:1', 'max:255'],
             'question_id' => ['required', 'integer',' exists:questions,id'],
             'next_question_id' => ['nullable', 'integer',' exists:questions,id'],
         ]);
